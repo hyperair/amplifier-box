@@ -35,6 +35,11 @@ screwhole_positions = [
 wire_clip_size = [64, 17.8, 2.9];
 wire_clip_screwhole_distance = 58.2;
 
+module std_text (t)
+{
+    text (t, size = 3, halign = "center", valign = "center");
+}
+
 function get_panel_thickness (pos) = (
     (pos == "front") ? front_panel_thickness : back_panel_thickness
 );
@@ -176,7 +181,7 @@ module place_panel (pos)
     thickness = get_panel_thickness (pos);
 
     translate ([0, dir * (box_size[1] / 2 - thickness), 0])
-    rotate (-90, X)
+    rotate (dir * -90, X)
     children ();
 }
 
@@ -186,7 +191,7 @@ module basic_panel (pos)
     thickness = get_panel_thickness (pos);
     size = get_panel_size (pos);
 
-    translate ([0, 0, dir * thickness / 2])
+    translate ([0, 0, thickness / 2])
     mcad_rounded_box (size, 2, center = true, sidesonly = true);
 }
 
@@ -207,6 +212,18 @@ module front_panel ()
         cylinder (d = 16, h = 5, center = true);
 
         panel_screwholes ();
+
+        /* text */
+        translate ([0, -(front_panel_thickness + epsilon)])
+        place_panel ("front")
+        mirror (Z)
+        linear_extrude (height = 1) {
+            translate ([22, -4])
+            std_text ("GAIN");
+
+            translate ([2.5, -4])
+            std_text ("FRQ");
+        }
     }
 }
 
@@ -290,6 +307,16 @@ module back_panel ()
         }
 
         power_jack ();
+
+        translate ([0, -2, back_panel_thickness])
+        mirror (Z)
+        linear_extrude (height = 1) {
+            translate ([-12, 0])
+            std_text ("IN");
+
+            translate ([12, 0])
+            std_text ("OUT");
+        }
     }
 }
 
