@@ -289,34 +289,38 @@ module back_panel ()
         }
     }
 
-    rotate (180, Y)
-    place_panel ()
     render ()
     difference () {
-        union () {
-            basic_panel ("back");
+        rotate (180, Y)
+        place_panel ()
+        difference () {
+            union () {
+                basic_panel ("back");
 
-            place_wire_clip ()
-            wire_clip_nuttrap_cylinders ();
+                place_wire_clip ()
+                wire_clip_nuttrap_cylinders ();
+            }
+
+            place_wire_clip () {
+                wire_clip ();
+                wire_clip_screwholes ();
+                wire_clip_cutout ();
+            }
+
+            power_jack ();
+
+            translate ([0, -2, back_panel_thickness])
+            mirror (Z)
+            linear_extrude (height = 1) {
+                translate ([-12, 0])
+                std_text ("IN");
+
+                translate ([12, 0])
+                std_text ("OUT");
+            }
         }
 
-        place_wire_clip () {
-            wire_clip ();
-            wire_clip_screwholes ();
-            wire_clip_cutout ();
-        }
-
-        power_jack ();
-
-        translate ([0, -2, back_panel_thickness])
-        mirror (Z)
-        linear_extrude (height = 1) {
-            translate ([-12, 0])
-            std_text ("IN");
-
-            translate ([12, 0])
-            std_text ("OUT");
-        }
+        panel_screwholes ();
     }
 }
 
