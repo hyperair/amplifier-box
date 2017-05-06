@@ -66,4 +66,14 @@ module screwhole (size, length, nut_projection = "axial",
     }
 }
 
+module mirror_if (condition, axis = Z)
+{
+    if (condition)
+        mirror (axis)
+        children ();
+
+    else
+        children ();
+}
+
 screwhole (3, 20, align_with = "below_nut");
